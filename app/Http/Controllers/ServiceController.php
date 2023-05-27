@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ServiceController extends Controller
 {
@@ -12,7 +13,8 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        //
+        $services = auth()->user()->services;
+        return Inertia::render('Services', compact('services'));
     }
 
     /**
@@ -20,7 +22,7 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('CreateService');
     }
 
     /**
@@ -28,7 +30,15 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required'
+        ]);
+
+        $service = Service::create([
+            'user_id' => auth()->id(),
+            'name' => $request->name
+        ]);
+        return Inertia::render('CreateService', compact('service'));
     }
 
     /**
@@ -44,7 +54,7 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
-        //
+        return Inertia::render('CreateService', compact('service'));
     }
 
     /**
@@ -52,7 +62,8 @@ class ServiceController extends Controller
      */
     public function update(Request $request, Service $service)
     {
-        //
+        $service->update($request->except(['id']));
+        return Inertia::render('CreateService', compact('service'));
     }
 
     /**

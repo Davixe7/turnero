@@ -9,12 +9,12 @@ import '@quasar/extras/material-icons/material-icons.css'
 import '@quasar/extras/material-symbols-outlined/material-symbols-outlined.css'
 import 'quasar/src/css/index.sass'
 
-import Base from './Pages/Admin/Base.vue'
+import Base from './Pages/Employee/Base.vue'
 
 createInertiaApp({
   resolve: name => {
-    const pages = import.meta.glob('./Pages/Admin/**/*.vue', { eager: true })
-    const page = pages[`./Pages/Admin/${name}.vue`]
+    const pages = import.meta.glob('./Pages/Employee/**/*.vue', { eager: true })
+    const page = pages[`./Pages/Employee/${name}.vue`]
     page.default.layout = page.default.layout || Base
     return page
   },
@@ -25,18 +25,6 @@ createInertiaApp({
         plugins: {Notify}, // import Quasar plugins and add here
         lang: quasarLang,
         iconSet: quasarIconSet,
-        /*
-        config: {
-          brand: {
-            // primary: '#e46262',
-            // ... or all other brand colors
-          },
-          notify: {...}, // default set of options for Notify Quasar plugin
-          loading: {...}, // default set of options for Loading Quasar plugin
-          loadingBar: { ... }, // settings for LoadingBar Quasar plugin
-          // ..and many more (check Installation card on each Quasar component/directive/plugin)
-        }
-        */
       })
       .mount(el)
   },

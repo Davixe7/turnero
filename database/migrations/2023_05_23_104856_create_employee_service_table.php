@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('employee_service', function (Blueprint $table) {
             $table->foreignId('user_id');
-            $table->foreignId('client_id');
             $table->foreignId('service_id');
-            $table->unsignedInteger('index');
-            $table->enum('status', ['paused', 'canceled', 'active', 'finished'])->default('active');
-            $table->datetime('finished_at')->nullable();
         });
     }
 

@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->id();
+        Schema::create('order_service', function (Blueprint $table) {
             $table->timestamps();
-            $table->foreignId('user_id');
-            $table->foreignId('client_id');
+            $table->foreignId('order_id');
             $table->foreignId('service_id');
-            $table->unsignedInteger('index');
-            $table->enum('status', ['paused', 'canceled', 'active', 'finished'])->default('active');
+            $table->enum('state', ['pending', 'error', 'success'])->default('pending');
+            $table->string('comment')->nullable();
+
+            $table->foreignId('taken_by')->nullable();
+            $table->datetime('taken_at')->nullable();
             $table->datetime('finished_at')->nullable();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('order_service');
     }
 };
