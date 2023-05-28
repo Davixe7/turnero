@@ -9,12 +9,18 @@
 
         <q-tab-panels v-model="tab" animated>
             <q-tab-panel name="t_0" class="q-pa-none">
-                <template v-for="service in services" :key="service.id">
+                <template v-for="service in services" :key="service.id" v-if="services.length">
                     <OrderServiceCard
                         :service="service"
                         @click="take(service.order.id, service.service_id)">
                     </OrderServiceCard>
                 </template>
+                <div v-else class="text-center q-pa-xl">
+                    <q-icon name="task_alt" size="128px" color="grey-3"></q-icon>
+                    <div class="text-h6 text-grey-3">
+                        No tienes servicios pendientes
+                    </div>
+                </div>
             </q-tab-panel>
             <q-tab-panel name="t_1" class="q-pa-none">
                 <OrderServiceCard
@@ -22,12 +28,24 @@
                     :mode="'taken'"
                     :service="service">
                 </OrderServiceCard>
+                <div v-else class="text-center q-pa-xl">
+                    <q-icon name="task_alt" size="128px" color="grey-3"></q-icon>
+                    <div class="text-h6 text-grey-3">
+                        No tienes servicios en curso
+                    </div>
+                </div>
             </q-tab-panel>
             <q-tab-panel name="t_2" class="q-pa-none">
-                <template v-for="service in history" :key="service.finished_at">
+                <template v-for="service in history" :key="service.finished_at" v-if="history.length">
                     <OrderServiceCard :service="service" :mode="'history'">
                     </OrderServiceCard>
                 </template>
+                <div v-else class="text-center q-pa-xl">
+                    <q-icon name="task_alt" size="128px" color="grey-3"></q-icon>
+                    <div class="text-h6 text-grey-3">
+                        Aún no hay historial
+                    </div>
+                </div>
             </q-tab-panel>
         </q-tab-panels>
     </div>

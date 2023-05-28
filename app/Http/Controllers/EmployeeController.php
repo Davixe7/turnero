@@ -42,7 +42,7 @@ class EmployeeController extends Controller
             'password' => bcrypt($request->password)
         ]);
         $employee = User::create($data);
-        $employee->employments()->sync($request->services);
+        $employee->employments()->sync($request->employments);
         $employee->load('employments');
         return Inertia::render('CreateEmployee', compact('employee'));
     }
@@ -79,7 +79,7 @@ class EmployeeController extends Controller
             'password' => $request->password ? bcrypt($request->password) : $employee->password
         ]);
         $employee->update($data);
-        $employee->employments()->sync($request->services);
+        $employee->employments()->sync($request->employments);
         return to_route('employees.edit', $employee);
     }
 

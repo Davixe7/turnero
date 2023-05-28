@@ -5,7 +5,7 @@
                 <form @submit.prevent="submit">
                     <q-card bordered flat style="max-width: 420px; margin: 10vh auto;">
                         <q-card-section class="text-h6 text-weight-bold text-center">
-                            Acceda a sus servicios
+                            Acceso Superusuario
                         </q-card-section>
                         <q-card-section class="q-gutter-y-md">
                             <q-input v-model="form.email" label="Nombre de usuario o Email" :error="Boolean(form.errors.email)"
@@ -34,8 +34,8 @@
 import { useForm } from '@inertiajs/vue3'
 
 const form = useForm({
-    email: props.email,
-    password: props.password
+    email: '',
+    password: ''
 })
 
 function submit() {

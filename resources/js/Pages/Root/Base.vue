@@ -1,7 +1,7 @@
 <template>
     <q-layout :view="'hhh LpR lff'">
         <q-header>
-            <q-toolbar>
+            <q-toolbar class="bg-black">
                 <q-btn flat round icon="menu" @click="leftDrawer=!leftDrawer"></q-btn>
                 <q-toolbar-title>Turnero</q-toolbar-title>
 
@@ -17,7 +17,7 @@
                 <q-item
                     class="text-grey-7"
                     v-for="route in routes"
-                    :active="router.page.url.includes(route.name)"
+                    :active="router.page.url == route.name"
                     :active-class="'admin-menu-link'"
                     @click="router.visit(route.name)"
                     clickable
@@ -45,16 +45,12 @@ import { router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 const props = defineProps(['auth'])
+const leftDrawer = ref(false)
 
 const routes = [
-    { name: '/orders', icon: 'pending_actions', label: 'Ordenes'},
-    { name: '/employees', icon: 'engineering', label: 'Empleados'},
-    { name: '/services', icon: 'shopping_bag', label: 'Servicios'},
-    { name: '/clients', icon: 'groups', label: 'Clientes'},
-    { name: '/form_fields/create', icon: 'description', label: 'Formulario'},
-    { name: '/messages', icon: 'message', label: 'Mensajería'},
+    { name: '/root/users', icon: 'groups', label: 'Usuarios'},
 ]
-const leftDrawer = ref(false)
+
 function logout(){
     router.post('/logout')
 }
@@ -73,8 +69,6 @@ function logout(){
     padding: 6px 15px;
 }
 .q-item.admin-menu-link {
-    // color: rgb(49, 46, 63) !important;
-    // background: rgba(81, 81, 255, 0.397);
     color: var(--q-primary) !important;
     background: #2557d840;
     font-weight: 500;

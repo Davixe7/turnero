@@ -53,6 +53,12 @@ class OrderController extends Controller
             'service_id' => $recepcion->id
         ]);
 
+        $data = [];
+        foreach($request->info as $id => $value){
+            $data[] = ['form_field_id'=>$id, 'value'=>$value];
+        }
+        $order->fields()->attach($data);
+
         $services  = array_merge($request->services, [$recepcion->id]);
         $order->services()->attach($services);
         return to_route('orders.create');
@@ -63,7 +69,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        $order->load('services.employee', 'client');
+        $order->load('services.employee', 'client', 'fields');
         return Inertia::render('OrderDetails', compact('order'));
     }
 

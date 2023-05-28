@@ -24,4 +24,8 @@ class Order extends Model
         ->select('services.*', 'order_service.*', 'services.id as id')
         ->orderBy('services.index');
     }
+
+    public function fields(){
+        return $this->belongsToMany(FormField::class)->withPivot(['value']);
+    }
 }

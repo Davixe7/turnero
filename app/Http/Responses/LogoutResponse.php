@@ -6,9 +6,8 @@ class LogoutResponse implements LogoutContract {
 
     public function toResponse($request)
     {
+        // if( auth()->user()->user_id ) return to_route('employee.login');
+        // if( auth()->user()->email == 'root@turnero.com' ) return to_route('root.login');
         return to_route('login');
-        // return $request->expectsJson()
-        // ? response()->json('success', 204)
-        // : to_route('login');
     }
 }

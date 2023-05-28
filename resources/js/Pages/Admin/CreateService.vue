@@ -2,7 +2,9 @@
     <q-card>
         <form @submit.prevent="submit">
             <q-card-section>
-                {{ form.id ? 'Actualizar' : 'Registrar' }} servicio
+                <div class="text-h6 text-weight-regular">
+                    {{ form.id ? 'Actualizar' : 'Registrar' }} servicio
+                </div>
             </q-card-section>
             <q-card-section class="q-gutter-y-md">
                 <q-input stack-label label="Nombre" :error="form.errors.name" :error-message="form.errors.name"

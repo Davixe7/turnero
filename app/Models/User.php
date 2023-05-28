@@ -79,6 +79,11 @@ class User extends Authenticatable
         return $this->hasMany(User::class);
     }
 
+    public function form_fields(){
+        return $this->hasMany(FormField::class);
+
+    }
+
     public function getOrderServicesAttribute(){
         // return $this->belongsToMany(Service::class, 'employee_service')
         // ->join('order_service', 'order_service.service_id', '=', 'services.id')

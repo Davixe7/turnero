@@ -1,17 +1,18 @@
 <template>
     <div id="login">
         <div class="row">
-            <div class="col col-md-4 q-mx-auto">
+            <div class="col col-md-4 q-mx-auto q-pt-xl">
                 <form @submit.prevent="submit">
-                    <q-card>
-                        <q-card-section class="text-subtitle1 text-weight-bold text-center">Control de porterias
+                    <q-card flat bordered>
+                        <q-card-section class="text-h6 text-weight-regular text-center">
+                            Panel de Administración
                         </q-card-section>
                         <q-card-section class="q-gutter-y-md">
-                            <q-input v-model="email" label="Nombre de usuario o Email" :error="Boolean(errors?.email)"
-                                :error-message="errors?.email">
+                            <q-input outlined v-model="form.email" label="Nombre de usuario o Email" :error="Boolean(form.errors.email)"
+                                :error-message="form.errors?.email">
                             </q-input>
-                            <q-input v-model="password" label="Contraseña" type="password" :error="Boolean(errors?.password)"
-                                :error-message="errors?.password"></q-input>
+                            <q-input outlined v-model="form.password" label="Contraseña" type="password" :error="Boolean(form.errors.password)"
+                                :error-message="form.errors?.password"></q-input>
                         </q-card-section>
                         <q-card-actions>
                             <q-btn type="submit" flat class="q-ml-auto">Ingresar</q-btn>
@@ -24,24 +25,14 @@
 </template>
 
 <script setup>
-import { router } from '@inertiajs/vue3'
-import { onMounted, ref } from 'vue';
+import { useForm } from '@inertiajs/vue3'
 
-const props = defineProps({
-    email: String,
-    password: String,
-    errors: Object
+const form = useForm({
+    email: '',
+    password: ''
 })
-
-const email = ref('')
-const password = ref('')
 
 function submit() {
-    router.post('/login', { email: email.value, password: password.value })
+    form.post('/login')
 }
-
-onMounted(() => {
-    email.value = props.email
-    password.value = props.password
-})
 </script>

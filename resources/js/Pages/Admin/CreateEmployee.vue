@@ -2,7 +2,7 @@
     <div id="create-employee">
         <q-card>
             <form @submit.prevent="submit">
-                <q-card-section>
+                <q-card-section class="text-h6 text-weight-regular">
                     {{ form.id ? 'Actualizar' : 'Registrar' }} empleado
                 </q-card-section>
                 <q-card-section class="q-gutter-y-md">
@@ -25,20 +25,20 @@
         </q-card>
 
         <q-card v-if="services && services.length">
-                <q-card-section>
-                    <div class="text-h6 text-weight-regular">
-                        Seleccione servicios
-                    </div>
-                </q-card-section>
-                <q-card-section>
-                    <q-option-group type="checkbox"
-                        :options="options"
-                        v-model="form.employments">
-                    </q-option-group>
-                </q-card-section>
-                <q-card-actions class="flex justify-end">
-                    <q-btn flat type="submit" :loading="form.processing">Guardar</q-btn>
-                </q-card-actions>
+            <q-card-section>
+                <div class="text-h6 text-weight-regular">
+                    Seleccione servicios
+                </div>
+            </q-card-section>
+            <q-card-section>
+                <q-option-group type="checkbox"
+                    :options="options"
+                    v-model="form.employments">
+                </q-option-group>
+            </q-card-section>
+            <q-card-actions class="flex justify-end">
+                <q-btn flat type="submit" :loading="form.processing" @click="submit">Guardar</q-btn>
+            </q-card-actions>
         </q-card>
     </div>
 </template>

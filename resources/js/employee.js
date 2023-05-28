@@ -15,7 +15,7 @@ createInertiaApp({
   resolve: name => {
     const pages = import.meta.glob('./Pages/Employee/**/*.vue', { eager: true })
     const page = pages[`./Pages/Employee/${name}.vue`]
-    page.default.layout = page.default.layout || Base
+    page.default.layout = name.includes('Login') ? undefined : Base
     return page
   },
   setup({ el, App, props, plugin }) {

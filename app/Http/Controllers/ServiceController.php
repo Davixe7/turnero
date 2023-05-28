@@ -34,9 +34,12 @@ class ServiceController extends Controller
             'name' => 'required'
         ]);
 
+        $lastService = auth()->user()->services()->orderBy('index', 'desc')->first();
+
         $service = Service::create([
             'user_id' => auth()->id(),
-            'name' => $request->name
+            'name'    => $request->name,
+            'index'   => $lastService ? $lastService->index + 1 : 0
         ]);
         return Inertia::render('CreateService', compact('service'));
     }
