@@ -33,7 +33,7 @@ const routes = [
 ]
 const leftDrawer = ref(false)
 function logout(){
-    router.post('logout')
+    router.post('/logout')
 }
 </script>
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\JoinClause;
 
 class Service extends Model
 {
@@ -39,8 +40,12 @@ class Service extends Model
     public function scopeAvailable($query){
         return $query
                 ->join('order_service', 'order_service.service_id', '=', 'services.id')
-                ->join('orders', 'orders.service_id', '=', 'services.id')
-                ->where('order_service.taken_by', null)
-                ->select('services.*', 'order_service.*', 'orders.*');
+                ->join('orders', function(JoinClause $join){
+                    $join
+                    ->on('orders.service_id', '=', 'services.id')
+                    ->on('orders.id', '=', 'order_service.order_id');
+                })
+                ->where('order_service.taken_at', '=', null)
+                ->select('services.id', 'services.name', 'order_service.*', 'services.id as id');
     }
 }

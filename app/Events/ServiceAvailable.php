@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Order;
 use App\Models\Service;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -11,19 +10,19 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Expr\Cast\Object_;
 
-class ServiceStatusChanged implements ShouldBroadcast
+class ServiceAvailable implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $service;
-    public $orderId;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($service, $orderId)
+
+    public function __construct($service, $orderId = null)
     {
         if( is_object($service) ){
             $this->service == $service;
@@ -36,6 +35,7 @@ class ServiceStatusChanged implements ShouldBroadcast
             ->where(['order_service.service_id'=> $service, 'order_id'=>$orderId])
             ->first()->toArray();
         }
+
     }
 
     /**

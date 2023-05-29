@@ -52,7 +52,7 @@
 </template>
 
 <script setup>
-import { useForm } from '@inertiajs/vue3';
+import { router, useForm } from '@inertiajs/vue3';
 import { useQuasar } from 'quasar';
 import { onMounted, ref, watch } from 'vue';
 import OrderServiceCard from './OrderServiceCard.vue';
@@ -68,25 +68,43 @@ const tabs = ref([
 const props = defineProps({
     history: Array,
     services: Array,
+    auth: Object,
     service: {
         type: Object,
         default: () => ({})
     }
 })
 
+const services = ref([])
+
 function take(orderId, serviceId) {
     if( props.service?.id ) return
     const form = useForm({ 'order_id': orderId, 'service_id': serviceId })
-    form.put('order_services/take', {
+    form.put('/order_services/take', {
         onSuccess: () => $q.notify('Servicio asignado con éxito')
     })
 }
 
-onMounted(()=>{
-    if (props.service) tab.value = 't_1'
+watch(() => props.services, (newVal) => {
+    services.value = [...newVal]
 })
+
 watch(() => props.service, (newVal) => {
     tab.value = newVal?.id ? 't_1' : 't_0'
+})
+
+onMounted(()=>{
+    if (props.service) tab.value = 't_1'
+
+    services.value = [...props.services]
+
+    Echo.channel(`users.${props.auth.user.user_id}.services`)
+    .listen('ServiceAvailable', (e) => {
+        services.value.push(e.service)
+    })
+    .listen('ServiceTaken', (e)=>{
+        router.reload({ only: ['services'], preserveScroll: true })
+    });
 })
 </script>
 

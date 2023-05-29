@@ -3,7 +3,7 @@
         <q-card-section class="flex">
             <div>
                 <div class="text-weight-medium q-mb-xs" style="font-size: 17px; line-height: 1em;">
-                    {{ service.order?.id }} Nissan 350Z Rojo
+                    {{ service.order_id }} Nissan 350Z Rojo
                 </div>
                 <div class="text-caption">
                     Servicio de {{ service.name }}

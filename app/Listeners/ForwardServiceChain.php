@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\ServiceAvailable;
 use App\Models\Order;
 use App\Models\Service;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -23,15 +24,18 @@ class ForwardServiceChain
      */
     public function handle(object $event): void
     {
-        $order   = Order::find($event->order_id);
-        $service = $order->services()->find($event->service_id);
-        $nextService = Service::whereRelation('orders', 'order_id', '=', $order->id)->where('index', '>', $service->index)->first();
+        // $service = $event->order->services()->find($event->service->id);
+        // $nextService = Service::whereRelation('orders', 'order_id', '=', $event->order->id)->where('index', '>', $service->index)->first();
 
-        if ($event->state == 'success') {
-            $order->update(['service_id' => $nextService ? $nextService->id : $order->service_id]);
-            return;
-        }
-        $recepcion = $order->services()->whereIndex(0)->first();
-        $order->update(['service_id' => $recepcion->id]);
+        // if ($event->state == 'success') {
+        //     $event->order->update(['service_id' => $nextService ? $nextService->id : $event->order->service_id]);
+        // }else {
+        //     $recepcion = $event->order->services()->whereIndex(0)->first();
+        //     $event->order->update(['service_id' => $recepcion->id]);
+        // }
+
+
+
+        // ServiceAvailable::dispatch($service, $order);
     }
 }

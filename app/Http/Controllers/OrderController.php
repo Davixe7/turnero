@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderCreated;
+use App\Events\ServiceAvailable;
 use App\Models\Client;
 use App\Models\Order;
 use App\Models\Service;
@@ -42,10 +44,9 @@ class OrderController extends Controller
         ]);
 
         $client = Client::create($request->except(['id', 'services']));
-
         $recepcion = Service::where(['user_id' => $request->user_id, 'index' => '0'])->first();
-
         $lastOrder = Order::where('user_id', $request->user_id)->latest()->first();
+
         $order  = Order::create([
             'index'      => $lastOrder ? $lastOrder->index + 1 : 1,
             'client_id'  => $client->id,
@@ -59,8 +60,11 @@ class OrderController extends Controller
         }
         $order->fields()->attach($data);
 
-        $services  = array_merge($request->services, [$recepcion->id]);
-        $order->services()->attach($services);
+        $order->services()->attach(array_merge($request->services, [$recepcion->id]));
+
+        ServiceAvailable::dispatch($recepcion->id, $order->id);
+        OrderCreated::dispatch($order->id);
+
         return to_route('orders.create');
     }
 

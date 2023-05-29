@@ -18,9 +18,12 @@
 </template>
 
 <script setup>
-import { Link } from '@inertiajs/vue3';
-import { onMounted, ref } from 'vue';
-const props = defineProps({orders: Array})
+import { Link, router } from '@inertiajs/vue3';
+import { onMounted, ref, watch } from 'vue';
+const props = defineProps({
+    orders: Array,
+    auth: Object
+})
 const search = ref('')
 const rows = ref([])
 const columns = ref([
@@ -30,5 +33,17 @@ const columns = ref([
     {name:'status', field: 'status', label: 'Estado', align: 'left'},
     {name:'actions', align: 'right'},
 ])
-onMounted(()=>rows.value = [...props.orders])
+
+watch(()=>props.orders, ()=> rows.value = [...props.orders])
+
+onMounted(()=>{
+    rows.value = [...props.orders]
+    Echo.channel(`users.${props.auth.user.id}.orders`)
+    .listen('OrderCreated', function(e){
+        rows.value.unshift(e.order)
+    })
+    .listen('OrderUpdated', function(e){
+        router.reload({only:['orders']})
+    })
+})
 </script>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\ServiceStatusChanged;
+use App\Events\ServiceTaken;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,7 @@ class OrderServiceController extends Controller
         $service  = auth()->user()->assignments()->where('finished_at', null)->with('order')->first();
         $services = auth()->user()->employments()->available()->with('order')->get();
         $history  = auth()->user()->assignments()->whereNotNull('finished_at')->with('order')->get();
-        return Inertia::render('Dashboard', compact('services', 'service', 'history'));
+        return Inertia::render('Dashboard', compact('history', 'service', 'services'));
     }
 
     /**
@@ -37,6 +38,8 @@ class OrderServiceController extends Controller
         ->where('service_id', $request->service_id)
         ->update(['taken_by' => auth()->id(), 'taken_at' => now()]);
 
+        broadcast(new ServiceTaken($request->service_id, $request->order_id))->toOthers();
+
         return to_route('dashboard');
     }
 
@@ -53,7 +56,7 @@ class OrderServiceController extends Controller
         ->where('service_id', $request->service_id)
         ->update(['state' => $request->state, 'finished_at'=>now()]);
 
-        ServiceStatusChanged::dispatch($request->order_id, $request->service_id, $request->state);
+        ServiceStatusChanged::dispatch($request->service_id, $request->order_id);
 
         return to_route('dashboard');
     }

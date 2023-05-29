@@ -1,7 +1,11 @@
 <?php
 
+use App\Events\ServiceAvailable;
+use App\Events\ServiceStatusChanged;
 use App\Models\Order;
 use App\Models\Service;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -30,7 +34,7 @@ Route::middleware('guest')->group( function(){
 
 Route::get('home', function(){
     if (auth()->user()->user_id) return to_route('dashboard');
-    if (auth()->user()->email != 'root@example.com') return to_route('orders.index');
+    if (auth()->user()->email != 'root@turnero.com') return to_route('orders.index');
     return to_route('root.users.index');
 });
 
@@ -58,4 +62,18 @@ Route::name('root.')->prefix('root')->group(function(){
     ->middleware('guest');
 
     Route::resource('users', App\Http\Controllers\UserController::class);
+});
+
+Route::get('dispatch', function(){
+    ServiceStatusChanged::dispatch(5, 5);
+});
+
+Route::get('orderservice', function(Request $request){
+    return auth()->user()->employments()->available()->with('order')->get();
+    Service::with('order')
+            ->join('order_service', 'order_service.service_id', 'services.id')
+            ->join('orders', 'orders.id', '=', 'order_service.order_id')
+            ->select('services.*', 'order_service.*', 'services.id as id')
+            ->where(['order_service.service_id'=> $request->service_id, 'order_id'=>$request->order_id])
+            ->first();
 });

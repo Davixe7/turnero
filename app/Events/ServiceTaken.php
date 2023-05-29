@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Order;
 use App\Models\Service;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -11,15 +10,13 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
 
-class ServiceStatusChanged implements ShouldBroadcast
+class ServiceTaken implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $service;
-    public $orderId;
-
+    public $order;
     /**
      * Create a new event instance.
      */
