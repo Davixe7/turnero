@@ -2,11 +2,14 @@
 
 use App\Events\ServiceAvailable;
 use App\Events\ServiceStatusChanged;
+use App\Models\Asistbot;
 use App\Models\Order;
 use App\Models\Service;
+use Illuminate\Http\Client\Request as ClientRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 /*
@@ -44,7 +47,6 @@ Route::group(['middleware'=>'auth'], function(){
     Route::resource('form_fields', App\Http\Controllers\FormFieldController::class)->except('index');
     Route::resource('orders', App\Http\Controllers\OrderController::class)->except(['create', 'store']);
     Route::resource('services', App\Http\Controllers\ServiceController::class);
-    Route::resource('messages', App\Http\Controllers\MessageController::class);
 });
 
 Route::group(['middleware'=>'auth'], function(){
@@ -76,4 +78,20 @@ Route::get('orderservice', function(Request $request){
             ->select('services.*', 'order_service.*', 'services.id as id')
             ->where(['order_service.service_id'=> $request->service_id, 'order_id'=>$request->order_id])
             ->first();
+});
+
+
+Route::get('test', function(){
+    return Asistbot::getQrCode();
+});
+
+Route::get('messages', [App\Http\Controllers\MessageController::class, 'index'])->name('messages.index');
+Route::get('messages/scan', [App\Http\Controllers\MessageController::class, 'scan'])->name('messages.scan');
+Route::get('messages/edit-phone', [App\Http\Controllers\MessageController::class, 'editPhone'])->name('messages.edit_phone');
+Route::put('messages/update-phone', [App\Http\Controllers\MessageController::class, 'updatePhone'])->name('messages.update_phone');
+Route::put('messages/logout', [App\Http\Controllers\MessageController::class, 'logout'])->name('messages.logout');
+
+Route::get('asistbot', function(Request $request){
+    Storage::append('app/logs/webhook.log', json_encode($request->all()));
+    return true;
 });
