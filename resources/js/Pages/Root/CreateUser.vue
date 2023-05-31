@@ -31,6 +31,15 @@
                         :error-message="form.errors.password"
                         v-model="form.password">
                     </q-input>
+
+                    <div class="q-gutter-sm flex items-center">
+                        <div>
+                            Membresia
+                        </div>
+                        <q-radio val="1" v-model="form.membership" label="Básico"></q-radio>
+                        <q-radio val="2" v-model="form.membership" label="Medio"></q-radio>
+                        <q-radio val="3" v-model="form.membership" label="Full"></q-radio>
+                    </div>
                 </q-card-section>
                 <q-card-actions class="flex justify-end">
                     <q-btn flat type="submit" :loading="form.processing">Guardar</q-btn>
@@ -50,7 +59,8 @@ const $q      = useQuasar()
 const form    = useForm({
     name: '',
     email: '',
-    password: ''
+    password: '',
+    membership: 1
 })
 
 function submit() {

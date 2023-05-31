@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('order_service', function (Blueprint $table) {
             $table->timestamps();
-            $table->foreignId('order_id');
-            $table->foreignId('service_id');
+            $table->foreignId('order_id')->constrained()->onDelete('cascade');;
+            $table->foreignId('service_id')->constrained()->onDelete('cascade');;
             $table->enum('state', ['pending', 'error', 'success'])->default('pending');
             $table->string('comment')->nullable();
 

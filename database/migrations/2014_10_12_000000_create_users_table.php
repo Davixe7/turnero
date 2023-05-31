@@ -19,6 +19,11 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('phone')->nullable();
+            $table->enum('membership', [1,2,3])->default(1);
+
+            $table->string('whatsapp_status')->default('offline')->nullable();
+            $table->string('whatsapp_instance_id')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });

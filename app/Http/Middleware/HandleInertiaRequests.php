@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -13,7 +14,7 @@ class HandleInertiaRequests extends Middleware
      * @see https://inertiajs.com/server-side-setup#root-template
      * @var string
      */
-    protected $rootView = 'app';
+    // protected $rootView = 'app';
 
     /**
      * Determines the current asset version.
@@ -27,6 +28,14 @@ class HandleInertiaRequests extends Middleware
         return parent::version($request);
     }
 
+    public function rootView(Request $request)
+    {
+        if ($request->route()->getPrefix() == '/root') {
+            return 'root';
+        }
+
+        return parent::rootView($request);
+    }
     /**
      * Defines the props that are shared by default.
      *
@@ -36,6 +45,12 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        if(auth()->check()){
+            $rootView = 'app';
+            if (auth()->user()->hasRole('root')){ $rootView = 'root'; }
+            if (auth()->user()->hasRole('employee')){ $rootView = 'employee'; }
+            // Inertia::setRootView($rootView);
+        }
         return array_merge(parent::share($request), [
             'auth.user' => fn () => $request->user()
                 ? $request->user()->only('id', 'name', 'email', 'user_id')

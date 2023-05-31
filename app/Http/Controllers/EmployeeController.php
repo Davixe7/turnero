@@ -41,7 +41,7 @@ class EmployeeController extends Controller
             'user_id' => auth()->id(),
             'password' => bcrypt($request->password)
         ]);
-        $employee = User::create($data);
+        $employee = User::create($data)->assignRole('employee');
         $employee->employments()->sync($request->employments);
         $employee->load('employments');
         return Inertia::render('CreateEmployee', compact('employee'));

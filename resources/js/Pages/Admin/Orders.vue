@@ -11,6 +11,7 @@
                         <q-btn flat round size="12px" icon="remove_red_eye">
                         </q-btn>
                     </Link>
+                    <q-btn size="12px" round flat icon="delete" @click="deleteOrder(props.row.id)"></q-btn>
                 </q-td>
             </template>
         </q-table>
@@ -35,6 +36,10 @@ const columns = ref([
 ])
 
 watch(()=>props.orders, ()=> rows.value = [...props.orders])
+
+function deleteOrder(order){
+    router.delete(`/orders/${order}`)
+}
 
 onMounted(()=>{
     rows.value = [...props.orders]

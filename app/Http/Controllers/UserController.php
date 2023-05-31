@@ -14,7 +14,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::where('id', '!=', auth()->id())->get();
         return Inertia::render('Users', compact('users'));
     }
 
@@ -37,7 +37,7 @@ class UserController extends Controller
             'password' => 'required'
         ]);
 
-        $user = User::create($request->all());
+        $user = User::create($request->all())->assignRole('admin');
         Service::create(['name' => 'Recepción', 'user_id' => $user->id, 'index'=>0]);
         return to_route('root.users.index');
     }
@@ -66,7 +66,8 @@ class UserController extends Controller
         $user->update([
             'name'  => $request->name ?: $user->name,
             'email' => $request->email ?: $user->email,
-            'password' => $request->password ? bcrypt($request->password) : $user->password
+            'password' => $request->password ? bcrypt($request->password) : $user->password,
+            'membership' => $request->membership ?: $user->membership,
         ]);
 
         return to_route('root.users.index');

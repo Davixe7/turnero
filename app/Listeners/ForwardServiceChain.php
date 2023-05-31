@@ -24,18 +24,18 @@ class ForwardServiceChain
      */
     public function handle(object $event): void
     {
-        // $service = $event->order->services()->find($event->service->id);
-        // $nextService = Service::whereRelation('orders', 'order_id', '=', $event->order->id)->where('index', '>', $service->index)->first();
+        $service = $event->order->services()->find($event->service->id);
+        $nextService = Service::whereRelation('orders', 'order_id', '=', $event->order->id)->where('index', '>', $service->index)->first();
 
-        // if ($event->state == 'success') {
-        //     $event->order->update(['service_id' => $nextService ? $nextService->id : $event->order->service_id]);
-        // }else {
-        //     $recepcion = $event->order->services()->whereIndex(0)->first();
-        //     $event->order->update(['service_id' => $recepcion->id]);
-        // }
+        if ($event->state == 'success') {
+            $event->order->update(['service_id' => $nextService ? $nextService->id : $event->order->service_id]);
+        }else {
+            $recepcion = $event->order->services()->whereIndex(0)->first();
+            $event->order->update(['service_id' => $recepcion->id]);
+        }
 
 
 
-        // ServiceAvailable::dispatch($service, $order);
+        ServiceAvailable::dispatch($nextService, $event->order);
     }
 }

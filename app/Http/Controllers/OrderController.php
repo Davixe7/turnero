@@ -27,7 +27,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-        $admins = User::with('services')->get();
+        $admins = User::whereRelation('roles', 'name', 'admin')->with('services')->get();
         return Inertia::render('CreateOrder', compact('admins'));
     }
 
@@ -98,6 +98,7 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+        $order->delete();
+        return to_route('orders.index');
     }
 }
