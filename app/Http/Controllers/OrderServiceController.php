@@ -17,9 +17,9 @@ class OrderServiceController extends Controller
     public function index()
     {
         Inertia::setRootView('employee');
-        $service  = auth()->user()->assignments()->where('finished_at', null)->with('order')->first();
-        $services = auth()->user()->employments()->available()->with('order')->get();
-        $history  = auth()->user()->assignments()->whereNotNull('finished_at')->with('order')->get();
+        $service  = auth()->user()->assignments()->where('finished_at', null)->with('order.fields')->first();
+        $services = auth()->user()->employments()->available()->with('order.fields')->get();
+        $history  = auth()->user()->assignments()->whereNotNull('finished_at')->with('order.fields')->get();
         return Inertia::render('Dashboard', compact('history', 'service', 'services'));
     }
 

@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('label')->required();
             $table->enum('type', ['text'])->required();
             $table->boolean('required')->required();
+            $table->boolean('is_identifier')->nullable();
+            $table->unsignedTinyInteger('index')->nullable();
+
         });
     }
 

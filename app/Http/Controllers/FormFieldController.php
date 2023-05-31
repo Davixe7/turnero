@@ -32,7 +32,13 @@ class FormFieldController extends Controller
     public function store(Request $request)
     {
         foreach($request->form_fields as $field){
-            $data = ['name' => $field['name'], 'label'=>$field['label'], 'required' => $field['required']];
+            $data = [
+                'name' => $field['name'],
+                'label'=>$field['label'],
+                'required' => $field['required'],
+                'index' => $field['index'],
+                'is_identifier' => $field['is_identifier'],
+            ];
             array_key_exists('id', $field)
             ? FormField::find($field['id'])->update($data)
             : FormField::create(array_merge($data, ['user_id'=>auth()->id()]));

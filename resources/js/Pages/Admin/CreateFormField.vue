@@ -5,27 +5,36 @@
                 Personalizar formulario de Ordenes
             </q-card-section>
             <q-card-section class="q-gutter-y-md">
-                <q-card v-for="formField in fields" flat bordered>
-                    <q-card-section class="flex items-center q-py-sm">
-                        <div class="text-weight-bold">
-                            {{ formField.label ? formField.label : 'Añadir etiqueta' }}
-                        </div>
-                        <div class="q-ml-auto text-grey">
-                            <q-btn size="12px" flat round :icon="formField.expanded ? 'expand_less' : 'expand_more'"
-                                @click="formField.expanded = !formField.expanded"></q-btn>
-                            <q-btn size="12px" flat round icon="delete" @click="deleteField(formField)"
-                                :loading="deleteFieldForm.process"></q-btn>
-                        </div>
-                    </q-card-section>
-                    <q-separator></q-separator>
-                    <q-slide-transition>
-                        <q-card-section v-show="formField.expanded" class="q-gutter-y-md">
-                            <q-input stack-label v-model="formField.name" label="Nombre"></q-input>
-                            <q-input stack-label v-model="formField.label" label="Etiqueta"></q-input>
-                            <q-checkbox class="q-pl-none" v-model="formField.required" label="Obligatorio"></q-checkbox>
+                <div
+                    v-for="formField in fields"
+                    draggable="true"
+                    @dragstart="dragged=formField"
+                    @dragover.prevent="()=>{}"
+                    @drop="onDrop($event, formField)">
+                    <q-card flat bordered>
+                        <q-card-section class="flex items-center q-py-sm">
+                            <div class="text-weight-bold">
+                                {{ formField.label ? formField.label : 'Añadir etiqueta' }}
+                            </div>
+                            <div class="q-ml-auto text-grey">
+                                <q-btn size="12px" flat round :icon="formField.expanded ? 'expand_less' : 'expand_more'"
+                                    @click="formField.expanded = !formField.expanded"></q-btn>
+                                <q-btn size="12px" flat round icon="delete" @click="deleteField(formField)"
+                                    :loading="deleteFieldForm.process"></q-btn>
+                            </div>
                         </q-card-section>
-                    </q-slide-transition>
-                </q-card>
+                        <q-separator></q-separator>
+                        <q-slide-transition>
+                            <q-card-section v-show="formField.expanded" class="q-gutter-y-md">
+                                <q-input stack-label v-model="formField.name" label="Nombre"></q-input>
+                                <q-input stack-label v-model="formField.label" label="Etiqueta"></q-input>
+                                <q-checkbox class="q-pl-none" v-model="formField.required" label="Obligatorio"></q-checkbox>
+                                <q-checkbox class="q-ml-md" v-model="formField.is_identifier" label="Aparece en el título"></q-checkbox>
+                            </q-card-section>
+                        </q-slide-transition>
+                    </q-card>
+                </div>
+
                 <q-card flat unelevated bordered>
                     <q-card-section class="flex justify-center">
                         <q-btn flat round icon="add" @click="addNew"></q-btn>
@@ -52,8 +61,27 @@ const props = defineProps({
     }
 });
 
-const fields = ref([])
+const dragged = ref(null)
+const fields  = ref([])
 const deleteFieldForm = useForm({})
+
+function onDrop(event, item){
+    if( item.index == dragged.value.index ) return
+    let upperSpan = event.target.getBoundingClientRect().bottom - (event.target.clientHeight / 2)
+
+    if( event.y < upperSpan){
+
+      if( dragged.value.index > item.index ){
+        fields.value = fields.value.map(needle => {
+          if( (needle.index < item.index) || (needle.index > dragged.value.index) ) return {...needle}
+          if( needle.index == dragged.value.index ) return {...needle, index: item.index }
+          return {...needle, index: needle.index + 1}
+        }).sort((a,b)=>a.index - b.index)
+
+      }
+
+    }
+  }
 
 function update() {
     router.post('/form_fields', { form_fields: fields.value })
@@ -71,13 +99,15 @@ function addNew() {
         name: '',
         label: '',
         required: false,
-        expanded: true
+        expanded: true,
+        index: fields.value.length + 1,
+        is_identifier: false
     })
 }
 
 function setFields() {
     fields.value = JSON.parse(JSON.stringify(props.formFields))
-    fields.value = fields.value.map(field => ({ ...field, required: Boolean(field.required) }))
+    fields.value = fields.value.map(field => ({ ...field, required: Boolean(field.required), is_identifier: Boolean(field.is_identifier) })).sort((a,b) => a.index - b.index)
 }
 
 watch(() => props.formFields, (newVal) => setFields())

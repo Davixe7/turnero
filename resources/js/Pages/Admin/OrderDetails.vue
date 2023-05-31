@@ -79,5 +79,15 @@ import { onMounted, ref } from 'vue';
 
     onMounted(()=>{
         rows.value = [...props.order.services]
+
+        Echo.channel(`users.${props.auth.user.id}.orders`)
+        .listen('OrderUpdated', function(e){
+            router.reload({only:['order']})
+        })
+
+        Echo.channel(`users.${props.auth.user.id}.services`)
+        .listen('ServiceStatusChanged', function(e){
+            router.reload({only:['order']})
+        })
     })
 </script>
