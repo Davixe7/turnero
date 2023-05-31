@@ -100,6 +100,7 @@ onMounted(()=>{
 
     Echo.channel(`users.${props.auth.user.user_id}.services`)
     .listen('ServiceAvailable', (e) => {
+        console.log(e)
         services.value.push(e.service)
     })
     .listen('ServiceTaken', (e)=>{

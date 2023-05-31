@@ -5,6 +5,7 @@ use App\Events\ServiceStatusChanged;
 use App\Models\Asistbot;
 use App\Models\Order;
 use App\Models\Service;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Client\Request as ClientRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -83,7 +84,15 @@ Route::get('orderservice', function(Request $request){
 
 
 Route::get('test', function(){
-    return Asistbot::getQrCode();
+    return Service::join('order_service', 'order_service.service_id', 'services.id')
+    ->join('orders', function(JoinClause $join){
+        $join
+        ->on('orders.id', 'order_service.order_id')
+        ->on('orders.service_id', 'services.id');
+    })
+    ->select(['services.*', 'order_service.*', 'orders.*'])
+    ->where(['order_service.service_id'=> 2])
+    ->get();
 });
 
 Route::get('messages', [App\Http\Controllers\MessageController::class, 'index'])->name('messages.index');

@@ -23,7 +23,7 @@
                                     :loading="deleteFieldForm.process"></q-btn>
                             </div>
                         </q-card-section>
-                        <q-separator></q-separator>
+                        <q-separator v-show="formField.expanded"></q-separator>
                         <q-slide-transition>
                             <q-card-section v-show="formField.expanded" class="q-gutter-y-md">
                                 <q-input stack-label v-model="formField.name" label="Nombre"></q-input>
@@ -66,24 +66,23 @@ const fields  = ref([])
 const deleteFieldForm = useForm({})
 
 function onDrop(event, item){
-    if( item.index == dragged.value.index ) return
+    if( item == dragged.value ) return
+
+    fields.value.splice( fields.value.indexOf(dragged.value), 1 )
     let upperSpan = event.target.getBoundingClientRect().bottom - (event.target.clientHeight / 2)
+    let start = fields.value.indexOf(item);
 
     if( event.y < upperSpan){
-
-      if( dragged.value.index > item.index ){
-        fields.value = fields.value.map(needle => {
-          if( (needle.index < item.index) || (needle.index > dragged.value.index) ) return {...needle}
-          if( needle.index == dragged.value.index ) return {...needle, index: item.index }
-          return {...needle, index: needle.index + 1}
-        }).sort((a,b)=>a.index - b.index)
-
-      }
-
+        fields.value.splice( start, 0, dragged.value )
+    }else {
+        start == fields.value.length - 1
+        ? fields.value.push( dragged.value )
+        : fields.value.splice( start + 1, 0, dragged.value )
     }
   }
 
 function update() {
+    fields.value.forEach((item, index)=>item.index = index)
     router.post('/form_fields', { form_fields: fields.value })
 }
 

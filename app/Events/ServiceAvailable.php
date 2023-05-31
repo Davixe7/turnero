@@ -28,7 +28,7 @@ class ServiceAvailable implements ShouldBroadcast
             $this->service == $service;
         }
         if( !is_null($orderId) && (is_integer($service) || is_string($service)) ){
-            $this->service = Service::with('order')
+            $this->service = Service::with('order.fields')
             ->join('order_service', 'order_service.service_id', 'services.id')
             ->join('orders', 'orders.id', '=', 'order_service.order_id')
             ->select('services.*', 'order_service.*', 'services.id as id')

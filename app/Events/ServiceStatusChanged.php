@@ -18,24 +18,27 @@ class ServiceStatusChanged implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $service;
-    public $orderId;
+    public $order;
+    public $array_service;
+
 
     /**
      * Create a new event instance.
      */
-    public function __construct($service, $orderId)
+    public function __construct($service, $order)
     {
         if( is_object($service) ){
             $this->service == $service;
         }
-        if( !is_null($orderId) && (is_integer($service) || is_string($service)) ){
+        if( !is_null($service) && (is_integer($service) || is_string($service)) ){
             $this->service = Service::with('order')
             ->join('order_service', 'order_service.service_id', 'services.id')
             ->join('orders', 'orders.id', '=', 'order_service.order_id')
             ->select('services.*', 'order_service.*', 'services.id as id')
-            ->where(['order_service.service_id'=> $service, 'order_id'=>$orderId])
-            ->first()->toArray();
+            ->where(['order_service.service_id'=> $service, 'order_id'=>$order])
+            ->first();
         }
+        $this->array_service = $this->service->toArray();
     }
 
     /**
@@ -45,6 +48,6 @@ class ServiceStatusChanged implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('users.' . $this->service['order']['user_id'] . '.services');
+        return new Channel('users.' . $this->array_service['order']['user_id'] . '.services');
     }
 }

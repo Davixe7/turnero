@@ -66,7 +66,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 
-    const props   = defineProps({order: Object})
+    const props   = defineProps({order: Object, auth: Object})
     const rows    = ref([])
     const columns = ref([
         {name: 'name', field: 'name', label: 'Servicio', align: 'left'},

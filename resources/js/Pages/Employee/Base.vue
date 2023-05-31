@@ -2,7 +2,7 @@
     <q-layout :view="'hhh LpR lff'">
         <q-header>
             <q-toolbar>
-                <q-toolbar-title>Empleados</q-toolbar-title>
+                <q-toolbar-title></q-toolbar-title>
 
                 <div class="q-px-md">
                     {{ auth ? auth?.user?.name : ''}}
