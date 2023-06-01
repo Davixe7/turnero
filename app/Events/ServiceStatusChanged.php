@@ -25,18 +25,13 @@ class ServiceStatusChanged implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct($service, $order)
+    public function __construct($service, $orderId)
     {
         if( is_object($service) ){
             $this->service == $service;
         }
         if( !is_null($service) && (is_integer($service) || is_string($service)) ){
-            $this->service = Service::with('order')
-            ->join('order_service', 'order_service.service_id', 'services.id')
-            ->join('orders', 'orders.id', '=', 'order_service.order_id')
-            ->select('services.*', 'order_service.*', 'services.id as id')
-            ->where(['order_service.service_id'=> $service, 'order_id'=>$order])
-            ->first();
+            $this->service = Service::asDemand($service, $orderId)->toArray();
         }
         $this->array_service = $this->service->toArray();
     }

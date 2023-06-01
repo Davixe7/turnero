@@ -37,15 +37,24 @@ class Service extends Model
         });
     }
 
+    public function scopeAsDemand($query, $service, $order){
+        return $query->with('order.fields')
+        ->join('order_service', 'order_service.service_id', 'services.id')
+        ->join('orders', 'orders.id', '=', 'order_service.order_id')
+        ->select('services.*', 'order_service.*', 'services.id as id')
+        ->where(['order_service.service_id'=> $service, 'order_id'=>$order])
+        ->first();
+    }
+
     public function scopeAvailable($query){
         return $query
-                ->join('order_service', 'order_service.service_id', '=', 'services.id')
-                ->join('orders', function(JoinClause $join){
-                    $join
-                    ->on('orders.service_id', '=', 'services.id')
-                    ->on('orders.id', '=', 'order_service.order_id');
-                })
-                ->where('order_service.taken_at', '=', null)
-                ->select('services.id', 'services.name', 'order_service.*', 'services.id as id');
+        ->join('order_service', 'order_service.service_id', '=', 'services.id')
+        ->join('orders', function(JoinClause $join){
+            $join
+            ->on('orders.service_id', '=', 'services.id')
+            ->on('orders.id', '=', 'order_service.order_id');
+        })
+        ->where('order_service.taken_at', '=', null)
+        ->select('services.id', 'services.name', 'order_service.*', 'services.id as id');
     }
 }

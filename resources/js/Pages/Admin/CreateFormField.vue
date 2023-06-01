@@ -91,6 +91,7 @@ function deleteField(field) {
         deleteFieldForm.delete(`/form_fields/${field.id}`)
     }
     fields.value.splice(fields.value.indexOf(field), 1)
+    fields.value.forEach((item, index)=>item.index = index)
 }
 
 function addNew() {
