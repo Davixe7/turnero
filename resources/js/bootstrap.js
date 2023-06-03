@@ -22,11 +22,11 @@ window.Pusher = Pusher;
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: 'your-pusher-key',
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
     wsHost: window.location.hostname,
     wsPort: 6001,
     forceTLS: false,
     disableStats: true,
-    cluster: 'mt1'
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER
 });
 
