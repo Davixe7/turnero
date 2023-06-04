@@ -33,7 +33,6 @@ class ServiceStatusChanged implements ShouldBroadcast
         if( !is_null($service) && (is_integer($service) || is_string($service)) ){
             $this->service = Service::asDemand($service, $orderId)->toArray();
         }
-        $this->array_service = $this->service->toArray();
     }
 
     /**
@@ -43,6 +42,6 @@ class ServiceStatusChanged implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('users.' . $this->array_service['order']['user_id'] . '.services');
+        return new Channel("users.{$this->service['order']['user_id']}.services");
     }
 }

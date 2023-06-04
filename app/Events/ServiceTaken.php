@@ -37,6 +37,6 @@ class ServiceTaken implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('users.' . $this->service['order']['user_id'] . '.services');
+        return new Channel("users.{$this->service['order']['user_id']}.services");
     }
 }
