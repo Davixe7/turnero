@@ -69,7 +69,7 @@ Route::name('root.')->prefix('root')->group(function(){
 });
 
 Route::get('dispatch', function(){
-    ServiceStatusChanged::dispatch(5, 5);
+    ServiceStatusChanged::dispatch(1, 1);
 });
 
 Route::get('orderservice', function(Request $request){
